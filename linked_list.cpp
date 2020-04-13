@@ -17,15 +17,66 @@ utec::first::linked_list_t::linked_list_t(const utec::linked_list_t &other) {
 }
 
 utec::linked_list_t &utec::first::linked_list_t::operator=(const utec::linked_list_t &other) {
+    if (other.size_ != 0)
+	{
+		size_ = 1;
+		auto actual = other.head_;
+		head_ = new CNode{ actual->value_, nullptr };
+		tail_ = head_;
+
+		size_t i = 1;
+		while (i < other.size_)
+		{
+			actual = actual->next_;
+			this->push_back(actual->value_);
+			++i;
+		}
+	}
+
+	else
+	{
+		head_ = nullptr;
+		tail_ = nullptr;
+
+	}
     return *this;
 }
 
 utec::first::linked_list_t::linked_list_t(utec::linked_list_t &&other) noexcept {
-    //nada
+    
+	size_ = move(other.size_);
+    
+	head_ = move(other.head_);
+    
+	tail_ = move(other.tail_);
+
+	other.size_  = 0;
+    
+	delete other.head_;
+    
+	delete other.tail_;
+    
+	other.head_ = nullptr;
+    
+	other.tail_ = nullptr;
 }
 
 utec::linked_list_t &utec::first::linked_list_t::operator=(utec::linked_list_t &&other) noexcept {
-    return *this;
+    auto actual = head_;
+	
+	while (actual != nullptr)
+	{
+		auto next = actual->next_;
+		delete actual;
+		current = next;
+	}
+	size_ = move(other.size());
+	head_ = move(other.head_);
+	tail_ = move(other.tail_);
+	other.size_ = 0;
+	other.head_ = nullptr;
+	other.tail_ = nullptr;
+	return *this;
 }
 
 utec::first::linked_list_t::~linked_list_t() {
